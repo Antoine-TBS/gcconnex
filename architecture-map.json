@@ -1,0 +1,1131 @@
+{
+  "schemaVersion": 1,
+  "title": "GCconnex emergency PHP \u2014 PR impact",
+  "brand": "GCCONNEX",
+  "summary": "PR changes build inputs, PHP package provenance, upload-progress policy and startup checks. Application logic is unchanged. Compare repository recipes, not live production. Local runtime QA belongs to 7881c90; mapped head adds documentation only. Head citation URLs resolve after branch publication.",
+  "mode": "comparison",
+  "snapshot": {
+    "label": "BASE \u2192 LOCAL HEAD \u00b7 NOT DEPLOYED",
+    "generatedAt": "2026-10-23",
+    "repositories": [
+      {
+        "id": "base",
+        "name": "GCconnex base",
+        "short": "BASE",
+        "sha": "bb89db027da3fac41d9248283cdb5f60812ae49c",
+        "url": "https://github.com/gctools-outilsgc/gcconnex",
+        "role": "base",
+        "treeHash": "2c51d6c996e925d91a367c905046438cec0d07e5"
+      },
+      {
+        "id": "head",
+        "name": "GCconnex head",
+        "short": "HEAD",
+        "sha": "112a3f1260bafd1d28af754667c6cdacc2b72ecc",
+        "url": "https://github.com/Antoine-TBS/gcconnex",
+        "role": "head",
+        "treeHash": "f6a69313d3f76ae4e475f43b47e7bb01efc3e8a2"
+      }
+    ]
+  },
+  "comparison": {
+    "revisionPairs": [
+      {
+        "logicalRepositoryId": "gcconnex",
+        "baseRepositoryId": "base",
+        "headRepositoryId": "head",
+        "mergeBaseSha": "bb89db027da3fac41d9248283cdb5f60812ae49c"
+      }
+    ]
+  },
+  "districts": [
+    {
+      "id": "inputs",
+      "label": "BUILD INPUTS",
+      "x": -7,
+      "z": 0,
+      "w": 5,
+      "d": 9
+    },
+    {
+      "id": "build",
+      "label": "RUNTIME BUILD",
+      "x": -1,
+      "z": 0,
+      "w": 5,
+      "d": 9
+    },
+    {
+      "id": "serve",
+      "label": "APPLICATION IMAGE",
+      "x": 5,
+      "z": 0,
+      "w": 5,
+      "d": 9
+    },
+    {
+      "id": "ops",
+      "label": "OPERATOR HANDOFF",
+      "x": 10,
+      "z": 0,
+      "w": 3,
+      "d": 7
+    }
+  ],
+  "nodes": [
+    {
+      "id": "checkout",
+      "code": "SC",
+      "title": "Application checkout",
+      "district": "inputs",
+      "repo": "head",
+      "type": "storage",
+      "x": -7,
+      "z": -2,
+      "h": 1.5,
+      "purpose": "Supplies unchanged application sources.",
+      "built": "Checkout supplies application files; donor supplies only two vendor trees.",
+      "stack": [],
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 73,
+          "lineEnd": 78,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        }
+      ]
+    },
+    {
+      "id": "donor",
+      "code": "VD",
+      "title": "Immutable vendor donor",
+      "district": "inputs",
+      "repo": "head",
+      "type": "storage",
+      "x": -6,
+      "z": 0,
+      "h": 1.5,
+      "purpose": "Preserves existing dependency artifacts.",
+      "built": "Digest-pinned donor; no application, OS or PHP copied from it.",
+      "stack": [],
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 1,
+          "lineEnd": 3,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        },
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 73,
+          "lineEnd": 78,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "supplier",
+      "code": "SU",
+      "title": "Pinned supplier source",
+      "district": "inputs",
+      "repo": "head",
+      "type": "external",
+      "x": -7,
+      "z": 2,
+      "h": 1.5,
+      "purpose": "Supplies PHP 5.6 revision 105 sources and retained security backports.",
+      "built": "Hash-pinned source archives; authenticated APT dependencies. Descriptor signature not independently verified.",
+      "stack": [],
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/build-php56.sh",
+          "line": 14,
+          "lineEnd": 27,
+          "blobOid": "c3ce53920bf3d0597cfff041ce29f7691072a923"
+        },
+        {
+          "repo": "head",
+          "label": "docs/php56-openssl-followup.md",
+          "line": 36,
+          "lineEnd": 42,
+          "blobOid": "635427549ac2b3a5be1d5e49e71bcbe158ee62dc"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "compiler",
+      "code": "BC",
+      "title": "Full PHP package build",
+      "district": "build",
+      "repo": "head",
+      "type": "workers",
+      "x": -2,
+      "z": -2,
+      "h": 1.5,
+      "purpose": "Compiles complete Debian PHP packages with local TLS backports.",
+      "built": "Zero-fuzz patch, source hash checks, distinct +gcconnex1 revision; no prebuilt binary relabeling.",
+      "stack": [],
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/build-php56.sh",
+          "line": 24,
+          "lineEnd": 51,
+          "blobOid": "c3ce53920bf3d0597cfff041ce29f7691072a923"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "tls",
+      "code": "TL",
+      "title": "Upstream TLS backport",
+      "district": "build",
+      "repo": "head",
+      "type": "control",
+      "x": 0,
+      "z": 1,
+      "h": 1.5,
+      "purpose": "Repairs wildcard bounds and SAN/Common Name precedence.",
+      "built": "Reviewed upstream adaptation applied to PHP OpenSSL stream code. This is source evidence, not exploit reproduction.",
+      "stack": [],
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/patches/0265-openssl-stream-hostname-verification.patch",
+          "line": 16,
+          "lineEnd": 39,
+          "blobOid": "edf8dce716f0a6cf12b74368db12c5d484e75515"
+        },
+        {
+          "repo": "head",
+          "label": "docker/patches/0265-openssl-stream-hostname-verification.patch",
+          "line": 75,
+          "lineEnd": 92,
+          "blobOid": "edf8dce716f0a6cf12b74368db12c5d484e75515"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "artifacts",
+      "code": "AR",
+      "title": "Source + package archive",
+      "district": "build",
+      "repo": "head",
+      "type": "storage",
+      "x": -2,
+      "z": 3,
+      "h": 1.5,
+      "purpose": "Retains rebuild provenance and exportable release artifacts.",
+      "built": "Optional php-artifacts target exports source, packages and build metadata.",
+      "stack": [],
+      "flows": [
+        "build",
+        "promotion"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 22,
+          "lineEnd": 24,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        },
+        {
+          "repo": "head",
+          "label": "docker/build-php56.sh",
+          "line": 35,
+          "lineEnd": 58,
+          "blobOid": "c3ce53920bf3d0597cfff041ce29f7691072a923"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "runtime",
+      "code": "PH",
+      "title": "PHP + Apache runtime",
+      "district": "serve",
+      "repo": "head",
+      "type": "api",
+      "x": 4,
+      "z": -3,
+      "h": 1.5,
+      "purpose": "Runs existing application code using the patched PHP runtime.",
+      "built": "Pinned Ubuntu base, local rebuilt packages and separately pinned memcache. Base used unversioned supplier binaries.",
+      "stack": [],
+      "flows": [
+        "build",
+        "startup",
+        "promotion"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 26,
+          "lineEnd": 52,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        },
+        {
+          "repo": "base",
+          "label": "Dockerfile",
+          "line": 34,
+          "lineEnd": 65,
+          "blobOid": "5833ea07a2bc7d6540ff5a261acd159af50e0641"
+        }
+      ],
+      "change": "modified",
+      "impact": "direct"
+    },
+    {
+      "id": "webconfig",
+      "code": "CF",
+      "title": "Apache configuration",
+      "district": "serve",
+      "repo": "head",
+      "type": "control",
+      "x": 6,
+      "z": 0,
+      "h": 1.5,
+      "purpose": "Prevents upload-progress re-enablement by application configuration.",
+      "built": "Security INI for startup and Apache php_admin_flag in application directory.",
+      "stack": [],
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/000-default.conf",
+          "line": 8,
+          "lineEnd": 17,
+          "blobOid": "23c2b291bb0a1ae71109be8cddceb2bb2b198135"
+        },
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 66,
+          "lineEnd": 69,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        },
+        {
+          "repo": "base",
+          "label": "docker/000-default.conf",
+          "line": 8,
+          "lineEnd": 17,
+          "blobOid": "62ca070580e071edac888ffaee231e21f755ec6c"
+        }
+      ],
+      "change": "modified",
+      "impact": "direct"
+    },
+    {
+      "id": "gate",
+      "code": "GT",
+      "title": "Runtime startup gate",
+      "district": "serve",
+      "repo": "head",
+      "type": "gateway",
+      "x": 4,
+      "z": 0,
+      "h": 1.5,
+      "purpose": "Rejects unexpected packages and startup security settings.",
+      "built": "Checks exact package revisions, INI trees, Apache syntax and loaded module; does not prove live request settings.",
+      "stack": [],
+      "flows": [
+        "startup"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/check-runtime.sh",
+          "line": 10,
+          "lineEnd": 47,
+          "blobOid": "372863b9659247d26637f0706c8bcf71fc27c8fb"
+        },
+        {
+          "repo": "head",
+          "label": "docker/runtime-entrypoint.sh",
+          "line": 1,
+          "lineEnd": 5,
+          "blobOid": "703ff8930567876313f737176460089077912f4e"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "startup",
+      "code": "ST",
+      "title": "Application startup",
+      "district": "serve",
+      "repo": "head",
+      "type": "workers",
+      "x": 4,
+      "z": 3,
+      "h": 1.5,
+      "purpose": "Preserves the application startup command after the gate.",
+      "built": "Existing installer behavior unchanged: production INIT must be unset.",
+      "stack": [],
+      "flows": [
+        "startup"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/start.sh",
+          "line": 1,
+          "lineEnd": 14,
+          "blobOid": "a34327d7ba0b6de1e902b67b1e14a559ecf3eecb"
+        }
+      ],
+      "impact": "transitive"
+    },
+    {
+      "id": "app",
+      "code": "EL",
+      "title": "Elgg application",
+      "district": "serve",
+      "repo": "head",
+      "type": "api",
+      "x": 6,
+      "z": -3,
+      "h": 1.5,
+      "purpose": "Boots Elgg and routes existing application requests.",
+      "built": "No application logic, database schema or authentication redesign in this PR.",
+      "stack": [],
+      "flows": [
+        "startup"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "index.php",
+          "line": 55,
+          "lineEnd": 65,
+          "blobOid": "7da802349653013f312691cefd727f84b1df4357"
+        }
+      ],
+      "impact": "transitive"
+    },
+    {
+      "id": "operators",
+      "code": "OP",
+      "title": "Azure release operators",
+      "district": "ops",
+      "repo": "head",
+      "type": "control",
+      "x": 10,
+      "z": 0,
+      "h": 1.5,
+      "purpose": "Stage and promote one approved registry digest, then verify all PHP workloads.",
+      "built": "Documented operator procedure only. Deployment details and production completion remain unverified.",
+      "stack": [],
+      "flows": [
+        "promotion"
+      ],
+      "supportStatus": "conditional",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docs/php56-deployment-handoff.md",
+          "line": 154,
+          "lineEnd": 184,
+          "blobOid": "a83ec71e04a27d88a38c80f77b2a08e35ed2facd"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "composer",
+      "code": "CO",
+      "title": "Composer stage (removed)",
+      "district": "inputs",
+      "repo": "base",
+      "type": "workers",
+      "x": -8,
+      "z": 0,
+      "h": 1.5,
+      "purpose": "Removed build-time dependency resolution; retained as a base-side tombstone.",
+      "built": "BASE ONLY \u2014 REMOVED: Alpine builder runs Composer; root lockfile is not copied.",
+      "stack": [],
+      "flows": [],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "base",
+          "label": "Dockerfile",
+          "line": 16,
+          "lineEnd": 29,
+          "blobOid": "5833ea07a2bc7d6540ff5a261acd159af50e0641"
+        }
+      ],
+      "change": "removed",
+      "impact": "direct"
+    }
+  ],
+  "edges": [
+    {
+      "id": "source-image",
+      "from": "checkout",
+      "to": "runtime",
+      "kind": "control",
+      "label": "Copy application sources",
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 73,
+          "lineEnd": 78,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        }
+      ]
+    },
+    {
+      "id": "donor-image",
+      "from": "donor",
+      "to": "runtime",
+      "kind": "payload",
+      "label": "Copy only vendor trees",
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 75,
+          "lineEnd": 77,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "source-build",
+      "from": "supplier",
+      "to": "compiler",
+      "kind": "payload",
+      "label": "Verify and extract pinned source",
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/build-php56.sh",
+          "line": 14,
+          "lineEnd": 27,
+          "blobOid": "c3ce53920bf3d0597cfff041ce29f7691072a923"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "patch-build",
+      "from": "tls",
+      "to": "compiler",
+      "kind": "payload",
+      "label": "Apply reviewed TLS patch and compile",
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/build-php56.sh",
+          "line": 24,
+          "lineEnd": 35,
+          "blobOid": "c3ce53920bf3d0597cfff041ce29f7691072a923"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "build-image",
+      "from": "compiler",
+      "to": "runtime",
+      "kind": "payload",
+      "label": "Install local rebuilt PHP packages",
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 33,
+          "lineEnd": 44,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "build-archive",
+      "from": "compiler",
+      "to": "artifacts",
+      "kind": "storage",
+      "label": "Export source/packages/provenance",
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/build-php56.sh",
+          "line": 35,
+          "lineEnd": 58,
+          "blobOid": "c3ce53920bf3d0597cfff041ce29f7691072a923"
+        },
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 22,
+          "lineEnd": 24,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "config-image",
+      "from": "webconfig",
+      "to": "runtime",
+      "kind": "control",
+      "label": "Enforce upload-progress mitigation",
+      "flows": [
+        "build"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 66,
+          "lineEnd": 69,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        },
+        {
+          "repo": "head",
+          "label": "docker/000-default.conf",
+          "line": 14,
+          "lineEnd": 16,
+          "blobOid": "23c2b291bb0a1ae71109be8cddceb2bb2b198135"
+        }
+      ],
+      "change": "modified",
+      "impact": "direct"
+    },
+    {
+      "id": "runtime-gate",
+      "from": "runtime",
+      "to": "gate",
+      "kind": "control",
+      "label": "Entrypoint runs package/startup gate",
+      "flows": [
+        "startup"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "Dockerfile",
+          "line": 90,
+          "lineEnd": 91,
+          "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+        },
+        {
+          "repo": "head",
+          "label": "docker/runtime-entrypoint.sh",
+          "line": 1,
+          "lineEnd": 5,
+          "blobOid": "703ff8930567876313f737176460089077912f4e"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "gate-start",
+      "from": "gate",
+      "to": "startup",
+      "kind": "control",
+      "label": "Start only after successful gate",
+      "flows": [
+        "startup"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/runtime-entrypoint.sh",
+          "line": 1,
+          "lineEnd": 5,
+          "blobOid": "703ff8930567876313f737176460089077912f4e"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "start-app",
+      "from": "startup",
+      "to": "app",
+      "kind": "control",
+      "label": "Run Apache / route PHP requests",
+      "flows": [
+        "startup"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docker/start.sh",
+          "line": 10,
+          "lineEnd": 14,
+          "blobOid": "a34327d7ba0b6de1e902b67b1e14a559ecf3eecb"
+        },
+        {
+          "repo": "head",
+          "label": "index.php",
+          "line": 55,
+          "lineEnd": 65,
+          "blobOid": "7da802349653013f312691cefd727f84b1df4357"
+        }
+      ]
+    },
+    {
+      "id": "image-release",
+      "from": "runtime",
+      "to": "operators",
+      "kind": "control",
+      "label": "Stage/promote exact image digest",
+      "flows": [
+        "promotion"
+      ],
+      "supportStatus": "conditional",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docs/php56-deployment-handoff.md",
+          "line": 154,
+          "lineEnd": 169,
+          "blobOid": "a83ec71e04a27d88a38c80f77b2a08e35ed2facd"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "archive-release",
+      "from": "artifacts",
+      "to": "operators",
+      "kind": "storage",
+      "label": "Retain artifacts and deployment evidence",
+      "flows": [
+        "promotion"
+      ],
+      "supportStatus": "conditional",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "head",
+          "label": "docs/php56-deployment-handoff.md",
+          "line": 78,
+          "lineEnd": 88,
+          "blobOid": "a83ec71e04a27d88a38c80f77b2a08e35ed2facd"
+        }
+      ],
+      "change": "added",
+      "impact": "direct"
+    },
+    {
+      "id": "composer-image",
+      "from": "composer",
+      "to": "runtime",
+      "kind": "control",
+      "label": "REMOVED: Copy generated vendor trees",
+      "flows": [],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "base",
+          "label": "Dockerfile",
+          "line": 80,
+          "lineEnd": 82,
+          "blobOid": "5833ea07a2bc7d6540ff5a261acd159af50e0641"
+        }
+      ],
+      "change": "removed",
+      "impact": "direct"
+    },
+    {
+      "id": "runtime-start",
+      "from": "runtime",
+      "to": "startup",
+      "kind": "control",
+      "label": "REMOVED: Entrypoint starts application command",
+      "flows": [],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "sources": [
+        {
+          "repo": "base",
+          "label": "Dockerfile",
+          "line": 90,
+          "lineEnd": 95,
+          "blobOid": "5833ea07a2bc7d6540ff5a261acd159af50e0641"
+        }
+      ],
+      "change": "removed",
+      "impact": "direct"
+    }
+  ],
+  "flows": [
+    {
+      "id": "build",
+      "code": "BL",
+      "title": "Build the patched image",
+      "summary": "Two vendor trees are preserved; PHP is rebuilt from pinned source. Independent build inputs converge in the final image.",
+      "payloads": [
+        "PHP packages",
+        "configuration",
+        "source evidence"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "change": "modified",
+      "impact": "direct",
+      "steps": [
+        {
+          "edge": "source-build",
+          "caption": "Verify and extract pinned source",
+          "payload": "runtime artifact / configuration",
+          "source": "docker/build-php56.sh:14",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "docker/build-php56.sh",
+              "line": 14,
+              "lineEnd": 27,
+              "blobOid": "c3ce53920bf3d0597cfff041ce29f7691072a923"
+            }
+          ]
+        },
+        {
+          "edge": "patch-build",
+          "caption": "Apply reviewed TLS patch and compile",
+          "payload": "runtime artifact / configuration",
+          "source": "docker/build-php56.sh:24",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "docker/build-php56.sh",
+              "line": 24,
+              "lineEnd": 35,
+              "blobOid": "c3ce53920bf3d0597cfff041ce29f7691072a923"
+            }
+          ]
+        },
+        {
+          "edge": "build-image",
+          "caption": "Install local rebuilt PHP packages",
+          "payload": "runtime artifact / configuration",
+          "source": "Dockerfile:33",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "Dockerfile",
+              "line": 33,
+              "lineEnd": 44,
+              "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+            }
+          ]
+        },
+        {
+          "edge": "source-image",
+          "caption": "Copy application sources",
+          "payload": "runtime artifact / configuration",
+          "source": "Dockerfile:73",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "Dockerfile",
+              "line": 73,
+              "lineEnd": 78,
+              "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+            }
+          ]
+        },
+        {
+          "edge": "donor-image",
+          "caption": "Copy only vendor trees",
+          "payload": "runtime artifact / configuration",
+          "source": "Dockerfile:75",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "Dockerfile",
+              "line": 75,
+              "lineEnd": 77,
+              "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+            }
+          ]
+        },
+        {
+          "edge": "config-image",
+          "caption": "Enforce upload-progress mitigation",
+          "payload": "runtime artifact / configuration",
+          "source": "Dockerfile:66",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "Dockerfile",
+              "line": 66,
+              "lineEnd": 69,
+              "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+            },
+            {
+              "repo": "head",
+              "label": "docker/000-default.conf",
+              "line": 14,
+              "lineEnd": 16,
+              "blobOid": "23c2b291bb0a1ae71109be8cddceb2bb2b198135"
+            }
+          ]
+        },
+        {
+          "edge": "build-archive",
+          "caption": "Export source/packages/provenance",
+          "payload": "runtime artifact / configuration",
+          "source": "docker/build-php56.sh:35",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "docker/build-php56.sh",
+              "line": 35,
+              "lineEnd": 58,
+              "blobOid": "c3ce53920bf3d0597cfff041ce29f7691072a923"
+            },
+            {
+              "repo": "head",
+              "label": "Dockerfile",
+              "line": 22,
+              "lineEnd": 24,
+              "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "startup",
+      "code": "ST",
+      "title": "Gate application startup",
+      "summary": "New gate runs before the existing start script. Live Apache setting verification remains a separate operator check.",
+      "payloads": [
+        "PHP packages",
+        "configuration",
+        "source evidence"
+      ],
+      "supportStatus": "supported",
+      "confidence": "high",
+      "change": "modified",
+      "impact": "direct",
+      "steps": [
+        {
+          "edge": "runtime-gate",
+          "caption": "Entrypoint runs package/startup gate",
+          "payload": "runtime artifact / configuration",
+          "source": "Dockerfile:90",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "Dockerfile",
+              "line": 90,
+              "lineEnd": 91,
+              "blobOid": "ff57627fe86a9fb9e422dcae4a8eaddcb2f9286d"
+            },
+            {
+              "repo": "head",
+              "label": "docker/runtime-entrypoint.sh",
+              "line": 1,
+              "lineEnd": 5,
+              "blobOid": "703ff8930567876313f737176460089077912f4e"
+            }
+          ]
+        },
+        {
+          "edge": "gate-start",
+          "caption": "Start only after successful gate",
+          "payload": "runtime artifact / configuration",
+          "source": "docker/runtime-entrypoint.sh:1",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "docker/runtime-entrypoint.sh",
+              "line": 1,
+              "lineEnd": 5,
+              "blobOid": "703ff8930567876313f737176460089077912f4e"
+            }
+          ]
+        },
+        {
+          "edge": "start-app",
+          "caption": "Run Apache / route PHP requests",
+          "payload": "runtime artifact / configuration",
+          "source": "docker/start.sh:10",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "docker/start.sh",
+              "line": 10,
+              "lineEnd": 14,
+              "blobOid": "a34327d7ba0b6de1e902b67b1e14a559ecf3eecb"
+            },
+            {
+              "repo": "head",
+              "label": "index.php",
+              "line": 55,
+              "lineEnd": 65,
+              "blobOid": "7da802349653013f312691cefd727f84b1df4357"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "promotion",
+      "code": "DP",
+      "title": "Documented release procedure",
+      "summary": "Configuration-dependent operator handoff. No Azure deployment or production verification is claimed.",
+      "payloads": [
+        "PHP packages",
+        "configuration",
+        "source evidence"
+      ],
+      "supportStatus": "conditional",
+      "confidence": "high",
+      "change": "added",
+      "impact": "direct",
+      "steps": [
+        {
+          "edge": "archive-release",
+          "caption": "Retain artifacts and deployment evidence",
+          "payload": "runtime artifact / configuration",
+          "source": "docs/php56-deployment-handoff.md:78",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "docs/php56-deployment-handoff.md",
+              "line": 78,
+              "lineEnd": 88,
+              "blobOid": "a83ec71e04a27d88a38c80f77b2a08e35ed2facd"
+            }
+          ]
+        },
+        {
+          "edge": "image-release",
+          "caption": "Stage/promote exact image digest",
+          "payload": "runtime artifact / configuration",
+          "source": "docs/php56-deployment-handoff.md:154",
+          "sources": [
+            {
+              "repo": "head",
+              "label": "docs/php56-deployment-handoff.md",
+              "line": 154,
+              "lineEnd": 169,
+              "blobOid": "a83ec71e04a27d88a38c80f77b2a08e35ed2facd"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "changeSummary": {
+    "added": 17,
+    "modified": 5,
+    "removed": 3,
+    "summary": "Counters describe mapped architecture subjects, not CVEs, file counts or failures. Removed: Composer build path and direct ungated startup relation. No production rollout performed."
+  }
+}
